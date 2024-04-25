@@ -1,0 +1,16 @@
+{
+  "locale": "es",
+  "fallbackLocale": "es",
+  "messages": {
+    "en": {
+      "categorias": "Categories",
+      "ver-todos": "See all",
+      "modo-oscuro": "Dark mode"
+    },
+    "es": {
+      "categorias": "Categorías",
+      "ver-todos": "Ver todos",
+      "modo-oscuro": "Modo oscuro"
+    }
+  }
+}

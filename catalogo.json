@@ -7,8 +7,12 @@
       "nombre": "Monitor AOC 32\"",
       "precio": 3500,
       "stock": 1,
-      "imagen": "https://www.lg.com/uy/images/tvs/MD06000000/32lm630bpdb-gallery-01-350-v1.jpg",
-      "descripcion": "Televisor LG 32 pulgadas",
+      "imagenes": [
+        "https://storage.aoc.com/assets/8585/AOC_C32G2AE_PV_FTL-large.png",
+        "https://storage.aoc.com/assets/8586/AOC_C32G2AE_PV_TOP-big.png",
+        "https://storage.aoc.com/assets/8587/AOC_C32G2AE_PV_BACK-big.png"
+      ],
+      "descripcion": "Monitor AOC 32 pulgadas",
       "categoria": "Monitores",
       "detalles": {
         "marca": "LG",
@@ -24,9 +28,10 @@
       "precio": 750,
       "stock": 1,
       "imagenes": [
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Digital_video_resolutions_%28VCD_to_4K%29.svg/2560px-Digital_video_resolutions_%28VCD_to_4K%29.svg.png",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Vector_Video_Standards8.svg/2560px-Vector_Video_Standards8.svg.png",
-        "https://upload.wikimedia.org/wikipedia/commons/b/b3/640x480.jpg"
+        "https://resource.logitech.com/w_1600,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/k120/gallery/k120-gallery-01-new.png",
+        "https://resource.logitech.com/w_1600,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/k120/gallery/k120-gallery-02-new.png",
+        "https://resource.logitech.com/w_1600,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/k120/gallery/k120-gallery-03-new.png",
+        "https://resource.logitech.com/w_1600,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/k120/gallery/k120-gallery-04-new.png"
       ],
       "categoria": "Periféricos",
       "descripcion": "Teclado gaming para PC y consolas",
@@ -39,10 +44,12 @@
       "ocultar": false
     },
     {
-      "nombre": "Auriculares Sony WH-1000XM4"
+      "nombre": "Auriculares Sony WH-1000XM4",
+      "categoria": "Audio"
     },
     {
       "nombre": "Micrófono Blue Yeti",
+      "categoria": "Audio",
       "ocultar": false
     },
     {

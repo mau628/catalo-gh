@@ -4,11 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catálogo</title>
+  <title>CataloGH</title>
 
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/vue-i18n@9.12.0/dist/vue-i18n.global.js"></script>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-switch@2.0.4/dist/css/bulma-switch.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
     integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -21,7 +23,11 @@
   <div id="app">
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item is-underlined" href="/">
+        <a class="navbar-item has-text-info" href="/">
+          <span class="icon">
+            <i class="fas fa-home fa-lg"></i>
+          </span>
+          &nbsp;
           <strong>{{catalogo.nombre}}</strong>
         </a>
 
@@ -38,12 +44,12 @@
 
           <div class="navbar-item has-dropdown is-hoverable" v-if="categorias.length > 0">
             <a class="navbar-link">
-              Categorías
+              {{$t("categorias")}}
             </a>
 
             <div class="navbar-dropdown">
               <a class="navbar-item" href="/">
-                Ver Todos
+                {{$t("ver-todos")}}
               </a>
               <hr class="navbar-divider">
               <a class="navbar-item" v-for="categoria in categorias" :href="'?categoria=' + categoria">
@@ -54,9 +60,30 @@
         </div>
 
         <div class="navbar-end">
+
+          <div class="navbar-item has-dropdown is-hoverable" v-if="categorias.length > 0">
+            <a class="navbar-link">
+              <span class="icon">
+                <i class="fas fa-language fa-lg"></i>
+              </span>
+            </a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" @click="cambiarLocale('es')">
+                Español
+              </a>
+              <a class="navbar-item" @click="cambiarLocale('en')">
+                English
+              </a>
+            </div>
+          </div>
+
           <div class="navbar-item">
             <div class="buttons">
-              <button class="button" @click="cambiarTema">Cambiar Tema</button>
+              <div class="field">
+                <input id="switchExample" type="checkbox" name="switchExample" class="switch" checked="checked"
+                  @change="cambiarTema" v-model="esTemaOscuro">
+                <label for="switchExample">{{$t("modo-oscuro")}}</label>
+              </div>
             </div>
           </div>
         </div>
@@ -79,8 +106,8 @@
             <div class="card-content">
               <div class="media">
                 <div class="media-left">
-                  <span class="icon">
-                    <i class="fas fa-info-circle fa-lg"></i>
+                  <span class="icon has-text-success">
+                    <i class="fas fa-circle fa-lg"></i>
                   </span>
                 </div>
                 <div class="media-content">
@@ -140,7 +167,6 @@
                   </template>
                 </carousel>
               </div>
-              <img v-else :src="urlImagen(item.imagen)" :alt="item.nombre" :onerror="errorImagen" />
             </div>
           </div>
         </div>
@@ -166,18 +192,42 @@
 </script>
 
 <script>
-  const { createApp, ref, computed } = Vue
+  const { createApp, ref, computed } = Vue;
+  const { createI18n } = VueI18n;
+
+  // Leer archivo JSON de forma síncrona
+  const leerArchivoJSON = (filePath) => {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", filePath, false);
+    xmlhttp.send();
+    if (xmlhttp.status == 200) {
+      return JSON.parse(xmlhttp.responseText);
+    }
+    else {
+      console.log({ xmlhttpError: xmlhttp })
+      return null;
+    }
+  }
+
+  // Dar formato de moneda
   const formatoMoneda = new Intl.NumberFormat("es-GT", {
     style: "currency",
     currency: "GTQ",
     minimumFractionDigits: 2
   });
+
+  // Imagen por defecto
   const imagen404 = "assets/404.gif";
 
+  // Parámetros de la URL
   const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
   });
   const categoriaParam = params.categoria;
+
+  // Internacionalización
+  const configuracionI18n = leerArchivoJSON("i18n.json");
+  const i18n = createI18n(configuracionI18n);
 
   const app = createApp({
     components: {
@@ -186,14 +236,10 @@
       'navigation': VueCarousel.Navigation
     },
     setup() {
-      const esTemaOscuro = ref(window.matchMedia('(prefers-color-scheme: dark)').matches)
-      const catalogo = ref({ items: [] });
+      const esTemaOscuro = ref(window.matchMedia('(prefers-color-scheme: dark)').matches);
+      const catalogo = ref(leerArchivoJSON("catalogo.json"));
       const categoriaActual = ref(categoriaParam ?? "");
-
-      (async () => {
-        const result = await fetch("catalogo.json")
-        catalogo.value = await result.json()
-      })()
+      document.title = catalogo.value.nombre;
 
       const categorias = computed(() => {
         var set = new Set(
@@ -203,9 +249,9 @@
             .filter((item) => !item.ocultar && !!item.categoria)
             .map((item) => item.categoria.toUpperCase())
             .sort((a, b) => a.localeCompare(b))
-        )
+        );
 
-        return Array.from(set)
+        return Array.from(set);
       })
 
       const articulos = computed(() => {
@@ -214,40 +260,42 @@
             .value
             .items
             .filter((item) => !item.ocultar && (categoriaActual.value == "" || (!!item.categoria && item.categoria.toUpperCase() === categoriaActual.value)))
-            .sort((a, b) => !!a.categoria && a.categoria.localeCompare(b.categoria))
+            .sort((a, b) => !!a.categoria && a.categoria.localeCompare(b.categoria));
 
-        return result
+        return result;
       })
 
       const urlImagen = (imagen) => {
         if (!imagen) {
           if (catalogo.value.usarImagenPorDefecto)
-            return imagen404
+            return imagen404;
           else
-            return "#"
+            return "#";
         }
         if (imagen.startsWith("http")) {
-          return imagen
+          return imagen;
         }
-        return `imagenes/${imagen}`
+        return `imagenes/${imagen}`;
       }
       const formatearMoneda = (valor) => {
-        return formatoMoneda.format(valor)
+        return formatoMoneda.format(valor);
       }
       const errorImagen = (e) => {
         if (catalogo.value.usarImagenPorDefecto) {
-          e.target.src = imagen404
+          e.target.src = imagen404;
         }
         else {
-          e.target.style.display = "none"
+          e.target.style.display = "none";
         }
       }
       const cambiarTema = () => {
-        esTemaOscuro.value = !esTemaOscuro.value
-        document.documentElement.dataset.theme = esTemaOscuro.value ? "dark" : "light"
+        document.documentElement.dataset.theme = esTemaOscuro.value ? "dark" : "light";
       }
       const inicialMayuscula = (texto) => {
-        return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase()
+        return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
+      }
+      const cambiarLocale = (locale) => {
+        i18n.global.locale = locale;
       }
 
       return {
@@ -257,6 +305,7 @@
         articulos,
         categorias,
 
+        cambiarLocale,
         cambiarTema,
         errorImagen,
         formatearMoneda,
@@ -266,12 +315,13 @@
     }
   })
 
-  app.mount("#app")
+  app.use(i18n);
+  app.mount("#app");
 </script>
 
 <style>
   .card {
-    border: 1px solid rgba(168, 168, 168, 0.2) !important;
+    border: 1px solid rgba(168, 168, 168, 0.3) !important;
   }
 
   .is-debug {
