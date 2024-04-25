@@ -1,0 +1,54 @@
+{
+  "nombre": "GH: Gaming House",
+  "descripcion": "Catálogo de productos para gamers y streamers profesionales!",
+  "usarImagenPorDefecto": false,
+  "items": [
+    {
+      "nombre": "Monitor AOC 32\"",
+      "precio": 3500,
+      "stock": 1,
+      "imagen": "https://www.lg.com/uy/images/tvs/MD06000000/32lm630bpdb-gallery-01-350-v1.jpg",
+      "descripcion": "Televisor LG 32 pulgadas",
+      "categoria": "Monitores",
+      "detalles": {
+        "marca": "LG",
+        "modelo": "32LM630BPDB",
+        "resolucion": "1366 x 768",
+        "puertos": "HDMI, USB, LAN",
+        "sintonizador": "Digital"
+      },
+      "ocultar": false
+    },
+    {
+      "nombre": "Teclado Logitech K120",
+      "precio": 750,
+      "stock": 1,
+      "imagenes": [
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Digital_video_resolutions_%28VCD_to_4K%29.svg/2560px-Digital_video_resolutions_%28VCD_to_4K%29.svg.png",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Vector_Video_Standards8.svg/2560px-Vector_Video_Standards8.svg.png",
+        "https://upload.wikimedia.org/wikipedia/commons/b/b3/640x480.jpg"
+      ],
+      "categoria": "Periféricos",
+      "descripcion": "Teclado gaming para PC y consolas",
+      "ocultar": false
+    },
+    {
+      "nombre": "Mouse Logitech G203",
+      "categoria": "Periféricos",
+      "precio": 500,
+      "ocultar": false
+    },
+    {
+      "nombre": "Auriculares Sony WH-1000XM4"
+    },
+    {
+      "nombre": "Micrófono Blue Yeti",
+      "ocultar": false
+    },
+    {
+      "nombre": "Impresora HP Deskjet 2135",
+      "categoria": "Impresoras",
+      "ocultar": true
+    }
+  ]
+}

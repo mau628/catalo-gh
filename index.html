@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo</title>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+    integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <script src="https://cdn.jsdelivr.net/npm/vue3-carousel@0.3.3/dist/carousel.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue3-carousel@0.3.3/dist/carousel.min.css">
+</head>
+
+<body>
+  <div id="app">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item is-underlined" href="/">
+          <strong>{{catalogo.nombre}}</strong>
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbar-gh">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div id="navbar-gh" class="navbar-menu">
+        <div class="navbar-start">
+
+          <div class="navbar-item has-dropdown is-hoverable" v-if="categorias.length > 0">
+            <a class="navbar-link">
+              Categorías
+            </a>
+
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="/">
+                Ver Todos
+              </a>
+              <hr class="navbar-divider">
+              <a class="navbar-item" v-for="categoria in categorias" :href="'?categoria=' + categoria">
+                {{inicialMayuscula(categoria)}}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="buttons">
+              <button class="button" @click="cambiarTema">Cambiar Tema</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <section class="section">
+      <div class="container has-text-centered">
+        <h1 class="title">
+          {{catalogo.nombre}}
+        </h1>
+        <p class="subtitle">
+          {{catalogo.descripcion}}
+        </p>
+      </div>
+
+      <div class="container is-max-desktop">
+        <div v-for="item in articulos" class="m-6">
+          <div class="card">
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left">
+                  <span class="icon">
+                    <i class="fas fa-info-circle fa-lg"></i>
+                  </span>
+                </div>
+                <div class="media-content">
+                  <p class="title is-4">{{item.nombre}}</p>
+                  <p class="subtitle is-6">{{item.descripcion ?? "&nbsp;"}}</p>
+                </div>
+              </div>
+
+              <div class="content">
+                <div class="field is-grouped is-grouped-multiline">
+
+                  <div class="control" v-if="!!item.categoria">
+                    <span v-if="!!item.categoria" class="tag is-primary is-medium">{{item.categoria}}</span>
+                  </div>
+
+                  <div class="control" v-if="!!item.stock && item.stock > 0">
+                    <div class="tags has-addons">
+                      <span class="tag is-dark is-medium">
+                        <span class="icon">
+                          <i class="fas fa-warehouse"></i>
+                        </span>
+                      </span>
+                      <span class="tag is-info is-medium">{{item.stock}}</span>
+                    </div>
+                  </div>
+
+                  <div class="control" v-if="!!item.precio && item.precio > 0">
+                    <div class="tags has-addons">
+                      <span class="tag is-dark is-medium">
+                        <span class="icon">
+                          <i class="fas fa-dollar-sign"></i>
+                        </span>
+                      </span>
+                      <span class="tag is-success is-medium">{{formatearMoneda(item.precio)}}</span>
+                    </div>
+                  </div>
+
+                </div>
+
+                <ul v-if="!!item.detalles">
+                  <li v-for="(detalle, nombre) in item.detalles" :key="nombre">
+                    <strong>{{inicialMayuscula(nombre)}}</strong>: {{detalle}}
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card-image has-text-centered">
+              <div v-if="!!item.imagenes && item.imagenes.length > 0">
+                <carousel :items-to-show="1" :wrap-around="true">
+                  <slide v-for="imagen in item.imagenes" :key="imagen">
+                    <div class="carousel__item">
+                      <img :src="urlImagen(imagen)" :alt="item.nombre" :onerror="errorImagen" />
+                    </div>
+                  </slide>
+                  <template #addons>
+                    <navigation />
+                  </template>
+                </carousel>
+              </div>
+              <img v-else :src="urlImagen(item.imagen)" :alt="item.nombre" :onerror="errorImagen" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</body>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    $navbarBurgers.forEach(el => {
+      el.addEventListener('click', () => {
+        const target = el.dataset.target;
+        const $target = document.getElementById(target);
+        el.classList.toggle('is-active');
+        $target.classList.toggle('is-active');
+
+      });
+    });
+  });
+</script>
+
+<script>
+  const { createApp, ref, computed } = Vue
+  const formatoMoneda = new Intl.NumberFormat("es-GT", {
+    style: "currency",
+    currency: "GTQ",
+    minimumFractionDigits: 2
+  });
+  const imagen404 = "assets/404.gif";
+
+  const params = new Proxy(new URLSearchParams(window.location.search), {
+    get: (searchParams, prop) => searchParams.get(prop),
+  });
+  const categoriaParam = params.categoria;
+
+  const app = createApp({
+    components: {
+      'carousel': VueCarousel.Carousel,
+      'slide': VueCarousel.Slide,
+      'navigation': VueCarousel.Navigation
+    },
+    setup() {
+      const esTemaOscuro = ref(window.matchMedia('(prefers-color-scheme: dark)').matches)
+      const catalogo = ref({ items: [] });
+      const categoriaActual = ref(categoriaParam ?? "");
+
+      (async () => {
+        const result = await fetch("catalogo.json")
+        catalogo.value = await result.json()
+      })()
+
+      const categorias = computed(() => {
+        var set = new Set(
+          catalogo
+            .value
+            .items
+            .filter((item) => !item.ocultar && !!item.categoria)
+            .map((item) => item.categoria.toUpperCase())
+            .sort((a, b) => a.localeCompare(b))
+        )
+
+        return Array.from(set)
+      })
+
+      const articulos = computed(() => {
+        const result =
+          catalogo
+            .value
+            .items
+            .filter((item) => !item.ocultar && (categoriaActual.value == "" || (!!item.categoria && item.categoria.toUpperCase() === categoriaActual.value)))
+            .sort((a, b) => !!a.categoria && a.categoria.localeCompare(b.categoria))
+
+        return result
+      })
+
+      const urlImagen = (imagen) => {
+        if (!imagen) {
+          if (catalogo.value.usarImagenPorDefecto)
+            return imagen404
+          else
+            return "#"
+        }
+        if (imagen.startsWith("http")) {
+          return imagen
+        }
+        return `imagenes/${imagen}`
+      }
+      const formatearMoneda = (valor) => {
+        return formatoMoneda.format(valor)
+      }
+      const errorImagen = (e) => {
+        if (catalogo.value.usarImagenPorDefecto) {
+          e.target.src = imagen404
+        }
+        else {
+          e.target.style.display = "none"
+        }
+      }
+      const cambiarTema = () => {
+        esTemaOscuro.value = !esTemaOscuro.value
+        document.documentElement.dataset.theme = esTemaOscuro.value ? "dark" : "light"
+      }
+      const inicialMayuscula = (texto) => {
+        return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase()
+      }
+
+      return {
+        catalogo,
+        esTemaOscuro,
+
+        articulos,
+        categorias,
+
+        cambiarTema,
+        errorImagen,
+        formatearMoneda,
+        inicialMayuscula,
+        urlImagen
+      }
+    }
+  })
+
+  app.mount("#app")
+</script>
+
+<style>
+  .card {
+    border: 1px solid rgba(168, 168, 168, 0.2) !important;
+  }
+
+  .is-debug {
+    background-color: red !important;
+  }
+
+  .capitalize {
+    text-transform: capitalize;
+  }
+
+  .carousel__item {
+    min-height: 200px;
+    width: 100%;
+    background-color: var(--vc-clr-primary);
+    color: var(--vc-clr-white);
+    font-size: 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent !important;
+  }
+
+  .carousel__slide {
+    padding: 10px;
+    background-color: transparent !important;
+  }
+
+  .carousel__prev,
+  .carousel__next {
+    box-sizing: content-box;
+    border: 0.1em solid rgba(168, 168, 168, 0.5);
+    background-color: rgba(227, 227, 227, 0.5) !important;
+    border-radius: 50%;
+  }
+</style>
+
+</html>
