@@ -1,7 +1,7 @@
 {
   "name": "GH: Gaming House1",
   "description": "Catálogo de productos para gamers y streamers profesionales!",
-  "useNotFoundImage": true,
+  "useNotFoundImage": false,
   "currency": {
     "locale": "es-GT",
     "code": "GTQ",
