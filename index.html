@@ -81,7 +81,7 @@
             <div class="buttons">
               <div class="field">
                 <input id="dark-theme" type="checkbox" name="dark-theme" class="switch" checked="checked"
-                  @change="toggleTheme" v-model="isDarkTheme">
+                  @change="toggleTheme" v-model="userTheme" true-value="dark" false-value="light">
                 <label for="dark-theme">{{$t("dark-mode")}}</label>
               </div>
             </div>
@@ -217,7 +217,6 @@
   const queryParams = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
   });
-  const categoryParam = queryParams.cat;
 
   // Read catalog and i18n settings
   const catalogData = readJSONFile("catalog.json");
@@ -231,6 +230,9 @@
     minimumFractionDigits: catalogData.currency.decimals,
   });
 
+  // |------------------|
+  // | Vue App          |
+  // |------------------|
   const app = createApp({
     components: {
       'carousel': VueCarousel.Carousel,
@@ -238,11 +240,16 @@
       'navigation': VueCarousel.Navigation
     },
     setup() {
-      const isDarkTheme = ref(window.matchMedia('(prefers-color-scheme: dark)').matches);
+      // Data
+      const themeMediaValue = window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light";
+      const userTheme = ref(localStorage.getItem("current-theme") ?? themeMediaValue);
       const catalog = ref(catalogData);
-      const currentCategory = ref(categoryParam ?? "");
+      const currentCategory = ref(queryParams.cat ?? "");
+
+      // Set page title
       document.title = catalog.value.name;
 
+      // Computed properties
       const categories = computed(() => {
         var set = new Set(
           catalog
@@ -255,7 +262,6 @@
 
         return Array.from(set);
       })
-
       const products = computed(() => {
         const result =
           catalog
@@ -267,12 +273,15 @@
         return result;
       })
 
+      // Methods
       const parseImageURL = (imageURL) => {
         if (!imageURL) {
-          if (catalog.value.useNotFoundImage)
+          if (catalog.value.useNotFoundImage) {
             return notFoundImage;
-          else
+          }
+          else {
             return "#";
+          }
         }
         if (imageURL.startsWith("http")) {
           return imageURL;
@@ -291,7 +300,8 @@
         }
       }
       const toggleTheme = () => {
-        document.documentElement.dataset.theme = isDarkTheme.value ? "dark" : "light";
+        document.documentElement.dataset.theme = userTheme.value;
+        localStorage.setItem("current-theme", userTheme.value);
       }
       const capitalize = (text) => {
         return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
@@ -300,9 +310,13 @@
         i18n.global.locale = locale;
       }
 
+      // Initial actions
+      toggleTheme();
+
+      // Return data and methods
       return {
         catalog,
-        isDarkTheme,
+        userTheme,
 
         categories,
         products,
