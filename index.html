@@ -44,12 +44,12 @@
 
           <div class="navbar-item has-dropdown is-hoverable" v-if="categories.length > 0">
             <a class="navbar-link">
-              {{$t("categorias")}}
+              {{$t("categories")}}
             </a>
 
             <div class="navbar-dropdown">
               <a class="navbar-item" href="./">
-                {{$t("ver-todos")}}
+                {{$t("show-all")}}
               </a>
               <hr class="navbar-divider">
               <a class="navbar-item" v-for="category in categories" :href="'?cat=' + category">
@@ -82,7 +82,7 @@
               <div class="field">
                 <input id="dark-theme" type="checkbox" name="dark-theme" class="switch" checked="checked"
                   @change="toggleTheme" v-model="isDarkTheme">
-                <label for="dark-theme">{{$t("modo-oscuro")}}</label>
+                <label for="dark-theme">{{$t("dark-mode")}}</label>
               </div>
             </div>
           </div>

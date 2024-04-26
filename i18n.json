@@ -3,14 +3,14 @@
   "fallbackLocale": "es",
   "messages": {
     "en": {
-      "categorias": "Categories",
-      "ver-todos": "See all",
-      "modo-oscuro": "Dark mode"
+      "categories": "Categories",
+      "show-all": "Show all",
+      "dark-mode": "Dark mode"
     },
     "es": {
-      "categorias": "Categorías",
-      "ver-todos": "Ver todos",
-      "modo-oscuro": "Modo oscuro"
+      "categories": "Categorías",
+      "show-all": "Ver todos",
+      "dark-mode": "Modo oscuro"
     }
   }
 }
