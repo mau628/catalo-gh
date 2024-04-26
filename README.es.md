@@ -71,6 +71,7 @@ Para cambiar los productos y categorías, edita el archivo `catalog.json`. El ar
       },
       "hide": false
     }
+  ]
 }
 ```
 - `name`: Texto. El nombre de la tienda, mostrado como el título de la página.
