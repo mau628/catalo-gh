@@ -107,7 +107,7 @@ Feel free to contact me if you want to contribute to this project.
 
 ## License
 
-Include information about the license under which your project is distributed.
+This project is licensed under the GNU General Public License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
