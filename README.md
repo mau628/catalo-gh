@@ -71,6 +71,7 @@ To change the products and categories, edit the `catalog.json` file. The file ha
       },
       "hide": false
     }
+  ]
 }
 ```
 - `name`: String. The name of the store, shown as the title of the page.
